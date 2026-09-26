@@ -1,8 +1,4 @@
-# Tontine Digital 1.0 — Application membre complète
-
-Contient :
-- `app/` : interface mobile web prête à publier sur GitHub Pages ;
-- `backend/` : base API Node.js/Express ;
-- `database/schema.sql` : première structure PostgreSQL.
-
-Architecture cible : application membre → API → PostgreSQL. Pour les paiements réels, il faudra connecter les prestataires, les webhooks, HTTPS et les secrets côté serveur.
+# Tontine Digital 1.0 — Espace Administration
+Archive séparée de l'application membre. Interface de test sans données fictives.
+Espaces : tableau de bord, utilisateurs, tontines, paiements, commissions, rapports, paramètres, journal/audit.
+Cette version est une interface de démonstration ; les vrais paiements nécessitent le backend sécurisé et les prestataires.
