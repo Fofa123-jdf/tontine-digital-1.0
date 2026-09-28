@@ -1,1 +1,234 @@
-(2).html
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tontine Digital — Membre</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f7f6;color:#17352d;margin:0}
+.wrap{max-width:900px;margin:auto;padding:16px}
+.card{background:#fff;padding:16px;border-radius:14px;margin:12px 0;box-shadow:0 3px 15px #0001}
+input,button,select{padding:11px;border-radius:9px;border:1px solid #cbded6;margin:4px}
+button{background:#006b4f;color:#fff;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.hidden{display:none}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid #e5eeea;text-align:left;font-size:12px}
+.scroll{overflow:auto}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<h1>🌿 Tontine Digital</h1>
+
+<section id="auth" class="card">
+<h2>Créer mon compte</h2>
+<input id="name" placeholder="Nom complet">
+<input id="phone" placeholder="Téléphone">
+<input id="email" placeholder="Email">
+<input id="ref" placeholder="Code parrain (facultatif)">
+<input id="password" type="password" placeholder="Mot de passe">
+<button onclick="register()">Créer mon compte</button>
+
+<hr>
+
+<h2>Connexion</h2>
+<input id="loginId" placeholder="Téléphone ou email">
+<input id="loginPw" type="password" placeholder="Mot de passe">
+<button onclick="login()">Se connecter</button>
+
+<p id="msg"></p>
+</section>
+
+<section id="app" class="hidden">
+
+<div class="card">
+<button onclick="logout()">Déconnexion</button>
+<h2 id="welcome"></h2>
+<p>Mon code parrain : <b id="myref"></b></p>
+</div>
+
+<div class="card">
+<h2>Mes tontines</h2>
+<div id="tontines"></div>
+</div>
+
+<div class="card">
+<h2>Rejoindre une tontine</h2>
+<input id="tontineId" type="number" placeholder="ID de la tontine">
+<button onclick="join()">Rejoindre</button>
+</div>
+
+<div class="card">
+<h2>Ma cotisation</h2>
+<input id="payTontine" type="number" placeholder="ID de la tontine">
+<button onclick="preview()">Voir le montant à payer</button>
+<div id="preview"></div>
+<button id="payBtn" class="hidden" onclick="pay()">Payer</button>
+</div>
+
+<div class="card">
+<h2>Historique de mes cotisations</h2>
+<button onclick="loadPayments()">Actualiser</button>
+<div class="scroll" id="payments"></div>
+</div>
+
+</section>
+</div>
+
+<script>
+let token=localStorage.tdMemberToken;
+const $=id=>document.getElementById(id);
+
+async function req(path,opt={}){
+opt.headers={...(opt.headers||{}),Authorization:'Bearer '+token,'Content-Type':'application/json'};
+const r=await fetch('/api'+path,opt);
+const d=await r.json().catch(()=>({}));
+if(!r.ok)throw Error(d.error||'Erreur');
+return d;
+}
+
+async function register(){
+try{
+const r=await fetch('/api/auth/register',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+fullName:$('name').value,
+phone:$('phone').value,
+email:$('email').value||null,
+password:$('password').value,
+referralCode:$('ref').value||null
+})
+});
+const d=await r.json();
+if(!r.ok)throw Error(d.error);
+token=d.token;
+localStorage.tdMemberToken=token;
+showApp(d.user);
+}catch(e){$('msg').textContent=e.message}
+}
+
+async function login(){
+try{
+const r=await fetch('/api/auth/login',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+identifier:$('loginId').value,
+password:$('loginPw').value
+})
+});
+const d=await r.json();
+if(!r.ok)throw Error(d.error);
+token=d.token;
+localStorage.tdMemberToken=token;
+showApp(d.user);
+}catch(e){$('msg').textContent=e.message}
+}
+
+function showApp(user){
+$('auth').classList.add('hidden');
+$('app').classList.remove('hidden');
+$('welcome').textContent='Bonjour '+(user.full_name||'membre');
+$('myref').textContent=user.referral_code||'—';
+loadTontines();
+loadPayments();
+}
+
+async function loadTontines(){
+try{
+const r=await req('/tontines');
+if(!r.length){
+$('tontines').innerHTML='<p>Aucune tontine disponible.</p>';
+return;
+}
+$('tontines').innerHTML='<div class="grid">'+r.map(t=>`
+<div class="card">
+<h3>${esc(t.name)}</h3>
+<p>Cotisation : <b>${esc(t.contribution_amount)} FCFA</b></p>
+<p>Fréquence : ${esc(t.frequency)}</p>
+<p>Membres : ${esc(t.members||0)}</p>
+<button onclick="selectTontine(${t.id})">Choisir</button>
+</div>`).join('')+'</div>';
+}catch(e){$('tontines').innerHTML='<p>'+esc(e.message)+'</p>'}
+}
+
+function selectTontine(id){
+$('tontineId').value=id;
+$('payTontine').value=id;
+}
+
+async function join(){
+try{
+await req('/tontines/'+$('tontineId').value+'/join',{method:'POST'});
+alert('Vous avez rejoint la tontine.');
+loadTontines();
+}catch(e){alert(e.message)}
+}
+
+async function preview(){
+try{
+const r=await req('/payments/preview',{
+method:'POST',
+body:JSON.stringify({
+tontineId:Number($('payTontine').value)
+})
+});
+$('preview').innerHTML=
+'<p>Cotisation : <b>'+r.baseAmount+' FCFA</b></p>'+
+'<p>Commission administration : '+r.adminCommission+' FCFA</p>'+
+'<p>Commission parrain : '+r.sponsorCommission+' FCFA</p>'+
+'<p><b>Total à payer : '+r.totalAmount+' FCFA</b></p>';
+$('payBtn').classList.remove('hidden');
+}catch(e){$('preview').textContent=e.message}
+}
+
+async function pay(){
+try{
+const r=await req('/payments',{
+method:'POST',
+body:JSON.stringify({
+tontineId:Number($('payTontine').value),
+provider:'MANUAL'
+})
+});
+alert('Paiement enregistré. Statut : '+r.status);
+$('payBtn').classList.add('hidden');
+loadPayments();
+}catch(e){alert(e.message)}
+}
+
+async function loadPayments(){
+try{
+const r=await req('/payments');
+if(!r.length){
+$('payments').innerHTML='<p>Aucune cotisation.</p>';
+return;
+}
+$('payments').innerHTML='<table><tr><th>Tontine</th><th>Montant</th><th>Statut</th><th>Date</th></tr>'+
+r.map(p=>'<tr><td>'+esc(p.tontine_name)+'</td><td>'+esc(p.total_amount)+' FCFA</td><td>'+esc(p.status)+'</td><td>'+esc(p.created_at)+'</td></tr>').join('')+
+'</table>';
+}catch(e){$('payments').textContent=e.message}
+}
+
+function logout(){
+localStorage.removeItem('tdMemberToken');
+location.reload();
+}
+
+function esc(s){
+return String(s??'').replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+}
+
+if(token){
+req('/me').then(showApp).catch(()=>logout());
+}
+</script>
+
+</body>
+</html>
