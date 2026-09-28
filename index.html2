@@ -1,0 +1,237 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tontine Digital 1.0 — Application mobile</title>
+<style>
+:root{--g:#087a53;--bg:#f4f7f6;--card:#fff;--txt:#17312a;--mut:#687772;--line:#e7ede9;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--txt)}
+header{background:var(--g);color:#fff;padding:16px 18px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px}header p{margin:2px 0 0;font-size:12px;opacity:.9}
+nav{display:flex;overflow-x:auto;gap:6px;padding:8px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:56px;z-index:4}
+nav button{border:0;background:#eef4f1;color:var(--g);padding:8px 12px;border-radius:16px;font-size:12px;font-weight:bold;white-space:nowrap}
+nav button.on{background:var(--g);color:#fff}
+main{max-width:480px;margin:0 auto;padding:12px 14px 40px}
+.screen{display:none}.screen.on{display:block}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px #0001}
+.card h3{margin:0 0 8px;font-size:14px}
+.stat{font-size:24px;font-weight:bold;color:var(--g)}
+.mut{color:var(--mut);font-size:12.5px}
+.badge{display:inline-block;padding:3px 9px;border-radius:14px;background:#e5f5ee;color:var(--g);font-size:11px;font-weight:bold}
+.badge.warn{background:#fff2e2;color:#b5680c}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+input{width:100%;padding:11px;border:1px solid #ccd8d3;border-radius:8px;margin:5px 0 12px;font-size:14px}
+label{font-size:12.5px;color:var(--mut)}
+button.primary{width:100%;background:var(--g);color:#fff;border:0;padding:13px;border-radius:9px;font-weight:bold;font-size:14px}
+button.sec{background:#eef4f1;color:var(--g);border:0;padding:11px;border-radius:9px;font-weight:bold;font-size:13px}
+.pmrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.pmrow button{padding:14px 6px}
+.pmrow button.on{outline:2px solid var(--g)}
+.notice{padding:10px 12px;background:#edf8f3;border-left:4px solid var(--g);font-size:12.5px;border-radius:6px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold}
+footer{text-align:center;padding:18px;color:var(--mut);font-size:11.5px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+.phone{max-width:390px;margin:16px auto 0;background:#0b0b0b;border-radius:34px;padding:10px;box-shadow:0 10px 30px #0003}
+.phone-screen{background:var(--bg);border-radius:24px;overflow:hidden}
+.doc{display:block;cursor:pointer;border:1.5px dashed #b9cdc4;border-radius:10px;padding:16px;text-align:center;color:var(--mut);font-size:12.5px;margin:5px 0 14px;background:#f8fbfa}
+.doc.filled{border-color:var(--g);background:#edf8f3}
+.doc b{color:var(--g);display:block;margin-bottom:3px}
+select{width:100%;padding:11px;border:1px solid #ccd8d3;border-radius:8px;margin:5px 0 12px;font-size:14px;background:#fff}
+</style></head><body>
+<div class="phone"><div class="phone-screen">
+<header><h1>Tontine Digital 1.0</h1><p>Application mobile — Membres</p></header>
+<nav id="navU">
+  <button class="on" onclick="go('u_login',this)">Connexion</button>
+  <button onclick="go('u_signup',this)">Inscription</button>
+  <button onclick="go('u_home',this)">Tableau de bord</button>
+  <button onclick="go('u_tontine',this)">Ma tontine</button>
+  <button onclick="go('u_cotis',this)">Cotisations</button>
+  <button onclick="go('u_pay',this)">Paiement</button>
+  <button onclick="go('u_profil',this)">Profil</button>
+  <button onclick="go('u_notif',this)">Notifications</button>
+</nav>
+<main>
+
+<section id="u_login" class="screen on"><div class="card"><h3>Se connecter</h3>
+<label>Téléphone ou email</label><input id="l_id" placeholder="Ex : 07 12 34 56 78">
+<label>Mot de passe</label><input id="l_pass" type="password" placeholder="Votre mot de passe">
+<button class="primary" onclick="tryLogin()">Se connecter</button>
+<p class="mut" style="text-align:center;margin-top:10px">Pas encore de compte ? <a href="#" onclick="go('u_signup',navU(1))">Créer un compte</a></p>
+</div></section>
+
+<section id="u_signup" class="screen"><div class="card"><h3>Créer un compte</h3>
+<label>Nom complet</label><input id="s_name" placeholder="Ex : Kouadio Koffi">
+<label>Date de naissance</label><input id="s_dob" type="date">
+<label>Téléphone</label><input id="s_phone" placeholder="Ex : 07 12 34 56 78">
+<label>Email</label><input id="s_email" placeholder="exemple@email.com">
+<label>Type de pièce d'identité</label><select id="s_doctype"><option>Carte Nationale d'Identité (CNI)</option><option>Passeport</option><option>Attestation d'identité</option></select>
+<label>Document administratif (pièce d'identité)</label>
+<label class="doc" id="docLabel" for="docInput"><b id="docTitle">📎 Choisir un fichier</b><span id="docSub">Photo ou scan recto/verso — PDF, JPG, PNG</span></label>
+<input type="file" id="docInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="fileChosen(this)">
+<label>Mot de passe</label><input id="s_pass" type="password" placeholder="Minimum 6 caractères">
+<label>Confirmer le mot de passe</label><input id="s_pass2" type="password" placeholder="Ressaisissez le mot de passe">
+<label style="display:flex;gap:8px;align-items:flex-start;margin:4px 0 14px"><input type="checkbox" id="cgu" style="width:auto;margin:3px 0 0"><span>J'accepte les conditions d'utilisation et la politique de confidentialité</span></label>
+<button class="primary" onclick="trySignup()">S'inscrire</button>
+<p class="mut" style="text-align:center;margin-top:10px">Déjà un compte ? <a href="#" onclick="go('u_login',navU(0))">Se connecter</a></p>
+</div></section>
+
+<section id="u_subscriber" class="screen"><div class="card" style="text-align:center">
+<div style="font-size:40px;color:var(--g)">🎉</div><h3>Bienvenue dans votre espace souscripteur</h3>
+<p class="mut">Votre compte a été créé. Votre document administratif est en cours de vérification.</p>
+<div class="row"><span>Statut du compte</span><span class="badge warn">Vérification en cours</span></div>
+<div class="row"><span>Document transmis</span><span class="badge">Reçu</span></div>
+</div>
+<div class="card"><h3>Prochaine étape</h3><p class="mut">Rejoignez ou créez une tontine pour commencer à cotiser.</p>
+<button class="sec" style="width:100%">Rejoindre une tontine existante</button><br><br>
+<button class="primary" onclick="go('u_home',navU(2))">Accéder à mon tableau de bord</button>
+</div></section>
+
+<section id="u_home" class="screen"><div class="card"><div style="display:flex;gap:10px;align-items:center"><div class="avatar" id="h_ava">?</div><div><b id="h_name">Votre nom</b><div class="mut" id="h_since">Non connecté</div></div></div></div>
+<div class="card"><b>Tontine Famille 2026</b> <span class="badge">Active</span><div class="mut">Cotisation mensuelle : 10 000 FCFA/mois</div>
+<div class="grid2" style="margin-top:10px"><div><div class="mut">Total versé</div><div class="stat" style="font-size:19px">80 000 FCFA</div></div><div><div class="mut">Reste à payer</div><div class="stat" style="font-size:19px">10 000 FCFA</div></div></div></div>
+<div class="card"><h3>Prochaines échéances</h3>
+<div class="row"><span>30 Sept. 2026</span><b>10 000 FCFA</b></div>
+<div class="row"><span>31 Oct. 2026</span><b>10 000 FCFA</b></div>
+<div class="row"><span>30 Nov. 2026</span><b>10 000 FCFA</b></div>
+</div>
+<button class="primary" onclick="go('u_pay',navU(4))">Payer ma cotisation</button>
+</section>
+
+<section id="u_tontine" class="screen"><div class="card"><b>Tontine Famille 2026</b> <span class="badge">Active</span>
+<div class="row"><span>Membres</span><b>25</b></div>
+<div class="row"><span>Tour actuel</span><b>N°4</b></div>
+<div class="row"><span>Prochain bénéficiaire</span><b>Membre N°4 — 30/11/2026</b></div>
+</div>
+<div class="card"><h3>Membres (extrait)</h3>
+<div class="row"><span>Kouakou K.</span><span class="badge">Payé</span></div>
+<div class="row"><span>Traoré F.</span><span class="badge">Payé</span></div>
+<div class="row"><span>Diaby M.</span><span class="badge warn">En attente</span></div>
+</div></section>
+
+<section id="u_cotis" class="screen"><div class="card"><h3>Mes cotisations — 10 000 FCFA/mois</h3><table>
+<tr><th>Échéance</th><th>Statut</th></tr>
+<tr><td>30/09/2026</td><td><span class="badge">Payée</span></td></tr>
+<tr><td>31/08/2026</td><td><span class="badge">Payée</span></td></tr>
+<tr><td>31/07/2026</td><td><span class="badge">Payée</span></td></tr>
+<tr><td>30/06/2026</td><td><span class="badge">Payée</span></td></tr>
+<tr><td>31/05/2026</td><td><span class="badge">Payée</span></td></tr>
+</table></div>
+<button class="primary" onclick="go('u_pay',navU(4))">Payer ma cotisation</button></section>
+
+<section id="u_pay" class="screen"><div class="card"><h3>Paiement de ma cotisation</h3>
+<label>Montant de la cotisation</label><input id="amount" type="number" placeholder="Ex : 10000" oninput="calc()">
+<div class="row"><span>Cotisation</span><b id="base">10 000 FCFA</b></div>
+<div class="row"><span>Commission Tontine Digital (1%)</span><b id="comm">+ 100 FCFA</b></div>
+<div class="row"><span><b>Total à payer</b></span><b id="total" class="stat" style="font-size:18px">10 100 FCFA</b></div>
+<p class="notice">Le 1% est géré automatiquement par le serveur, pas par l'application. Cela garantit la transparence des transactions.</p>
+<p style="margin:10px 0 4px"><b>Choisissez votre moyen de paiement</b></p>
+<div class="pmrow">
+<button onclick="pm(this)">🟠 Orange Money</button><button onclick="pm(this)">🟡 MTN MoMo</button>
+<button onclick="pm(this)">🟢 Moov Money</button><button onclick="pm(this)">🔵 Wave</button>
+</div>
+<button class="primary" onclick="go('u_receipt',null)">Payer maintenant</button>
+</div></section>
+
+<section id="u_receipt" class="screen"><div class="card" style="text-align:center">
+<div style="font-size:40px;color:var(--g)">✅</div><h3>Paiement réussi !</h3>
+<div class="row"><span>Montant cotisation</span><b id="r_base">10 000 FCFA</b></div>
+<div class="row"><span>Commission (1%)</span><b id="r_comm">100 FCFA</b></div>
+<div class="row"><span><b>Total payé</b></span><b id="r_total">10 100 FCFA</b></div>
+<div class="row"><span>Référence</span><b>OM-123456789</b></div>
+<button class="primary" onclick="go('u_home',navU(2))">Retour au tableau de bord</button>
+</div></section>
+
+<section id="u_profil" class="screen"><div class="card" style="display:flex;gap:12px;align-items:center"><div class="avatar" id="p_ava">?</div><div><b id="p_name">Votre nom</b><div class="mut" id="p_phone">—</div><div class="mut" id="p_email">—</div></div></div>
+<div class="card">
+<div class="row"><span>Mes informations</span><span>›</span></div>
+<div class="row"><span>Mot de passe</span><span>›</span></div>
+<div class="row"><span>Mes tontines</span><span>›</span></div>
+<div class="row"><span>Historique des paiements</span><span>›</span></div>
+<div class="row"><span>Notifications</span><span>›</span></div>
+<div class="row"><span>Aide &amp; Contact</span><span>›</span></div>
+</div></section>
+
+<section id="u_notif" class="screen"><div class="card"><div class="row"><span>✔️ Cotisation de 10 000 FCFA confirmée</span></div>
+<div class="row"><span>🔔 Prochaine cotisation le 21/09/2026</span></div>
+<div class="row"><span>👤 Un nouveau membre a rejoint la tontine</span></div>
+<div class="row"><span>🏆 C'est votre tour de bénéficiaire le 26/08/2026</span></div>
+</div></section>
+</main>
+<footer>Démo locale — aucune transaction réelle, aucune donnée n'est envoyée à un serveur.</footer>
+</div></div>
+<script>
+var account=null;
+function initials(name){
+ var p=name.trim().split(/\s+/);
+ return ((p[0]||'')[0]+(p[1]?p[1][0]:'')).toUpperCase()||'?';
+}
+function applyAccountToUI(){
+ if(!account)return;
+ document.getElementById('h_ava').textContent=initials(account.name);
+ document.getElementById('h_name').textContent=account.name;
+ document.getElementById('h_since').textContent='Membre depuis '+account.since;
+ document.getElementById('p_ava').textContent=initials(account.name);
+ document.getElementById('p_name').textContent=account.name;
+ document.getElementById('p_phone').textContent=account.phone;
+ document.getElementById('p_email').textContent=account.email;
+}
+function tryLogin(){
+ var id=document.getElementById('l_id').value.trim();
+ var pass=document.getElementById('l_pass').value;
+ if(!id||!pass){alert('Veuillez saisir votre identifiant et votre mot de passe.');return;}
+ if(!account || (account.phone!==id && account.email!==id) || account.pass!==pass){
+  alert("Aucun compte ne correspond. Créez d'abord un compte via « Créer un compte ».");return;
+ }
+ applyAccountToUI();
+ go('u_home',navU(2));
+}
+function trySignup(){
+ var name=document.getElementById('s_name').value.trim();
+ var dob=document.getElementById('s_dob').value;
+ var phone=document.getElementById('s_phone').value.trim();
+ var email=document.getElementById('s_email').value.trim();
+ var pass=document.getElementById('s_pass').value;
+ var pass2=document.getElementById('s_pass2').value;
+ var doc=document.getElementById('docInput').files.length>0;
+ var cgu=document.getElementById('cgu').checked;
+ if(!name||!dob||!phone||!email||!pass||!pass2){alert('Veuillez remplir tous les champs.');return;}
+ if(pass.length<6){alert('Le mot de passe doit contenir au moins 6 caractères.');return;}
+ if(pass!==pass2){alert('Les mots de passe ne correspondent pas.');return;}
+ if(!doc){alert("Veuillez joindre votre document administratif (pièce d'identité).");return;}
+ if(!cgu){alert("Veuillez accepter les conditions d'utilisation.");return;}
+ var d=new Date();
+ account={name:name,dob:dob,phone:phone,email:email,pass:pass,since:('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()};
+ applyAccountToUI();
+ go('u_subscriber',null);
+}
+function go(id,btn){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+ document.getElementById(id).classList.add('on');
+ document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+ if(btn) btn.classList.add('on');
+ window.scrollTo(0,0);
+}
+function navU(i){return document.querySelectorAll('nav button')[i];}
+function fileChosen(input){
+ var lbl=document.getElementById('docLabel');
+ if(input.files && input.files[0]){
+  document.getElementById('docTitle').textContent='✅ '+input.files[0].name;
+  document.getElementById('docSub').textContent='Fichier prêt à être envoyé — cliquez pour changer';
+  lbl.classList.add('filled');
+ }
+}
+function pm(b){document.querySelectorAll('.pmrow button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}
+function calc(){
+ var a=Number(document.getElementById('amount').value)||0, c=Math.round(a*0.01), t=a+c;
+ document.getElementById('base').textContent=a.toLocaleString('fr-FR')+' FCFA';
+ document.getElementById('comm').textContent='+ '+c.toLocaleString('fr-FR')+' FCFA';
+ document.getElementById('total').textContent=t.toLocaleString('fr-FR')+' FCFA';
+ document.getElementById('r_base').textContent=a.toLocaleString('fr-FR')+' FCFA';
+ document.getElementById('r_comm').textContent=c.toLocaleString('fr-FR')+' FCFA';
+ document.getElementById('r_total').textContent=t.toLocaleString('fr-FR')+' FCFA';
+}
+</script>
+</body></html>
