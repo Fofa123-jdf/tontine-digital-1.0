@@ -1,0 +1,10 @@
+TONTINE DIGITAL 1.0 — CORRECTIONS
+
+1. package.json : correction des chemins src/server.js et src/bootstrap-admin.js -> fichiers réellement présents à la racine.
+2. api-check.yml : correction du répertoire api/ et du chemin src/server.js.
+3. DEPLOIEMENT.md : documentation alignée sur la structure réelle du dépôt.
+4. server.js : correction obligatoire du calcul de la commission parrain : le code utilisait p.rows[0].referred_by alors que referred_by est dans t.rows[0].
+5. Règle métier conservée : première cotisation uniquement : 1 % administration + 1 % parrain valide ; cotisations suivantes : 0 commission.
+6. Aucun numéro de compte, mot de passe ou clé réelle n'est ajouté.
+
+IMPORTANT : cette archive est un correctif à téléverser/remplacer dans le dépôt existant. Les intégrations Orange Money, MTN Money, SMS/voix et les tâches automatiques J-7/J-3/J-1/J0 restent à configurer avant la production réelle.

@@ -1,0 +1,16 @@
+Dans server.js, dans POST /api/payments, remplacer :
+
+const first=!p.rows[0].has_paid,base=Number(t.rows[0].contribution_amount),admin=first?Math.floor(base*.01):0,sponsor=first&&p.rows[0].referred_by?Math.floor(base*.01):0,total=base+admin+sponsor;
+
+par :
+
+const first=!p.rows[0].has_paid,
+      base=Number(t.rows[0].contribution_amount),
+      admin=first?Math.floor(base*.01):0,
+      sponsor=first&&t.rows[0].referred_by?Math.floor(base*.01):0,
+      total=base+admin+sponsor;
+
+C'est la correction nécessaire pour appliquer la règle définitive du projet :
+- première cotisation : +1 % administration ;
+- première cotisation avec parrain valide : +1 % parrain ;
+- cotisations suivantes : aucune commission.
