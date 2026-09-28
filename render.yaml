@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: tontine-digital-api
+    runtime: node
+    region: frankfurt
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tontine-digital-db
+          property: connectionString
+      - key: DATABASE_SSL
+        value: "true"
+      - key: DB_POOL_MAX
+        value: "10"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: ""
+databases:
+  - name: tontine-digital-db
+    plan: free
+    region: frankfurt
