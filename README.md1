@@ -1,0 +1,12 @@
+# Tontine Digital 1.0 — version développée
+
+Architecture : `member/` application membre, `admin/` espace administration, `api/` backend commun, `api/db/schema.sql` PostgreSQL.
+
+## Règle de cotisation
+Première cotisation : cotisation de base + 1% administration + 1% parrain valide. Exemple 500 FCFA avec parrain valide = 510 FCFA. Cotisations suivantes = montant de base uniquement.
+
+## Aucun faux compte / aucune transaction fictive
+Le dépôt ne contient pas de données utilisateur, de mot de passe réel, de clé API ou de transaction inventée.
+
+## Déploiement
+Déployer l'API avec PostgreSQL et servir `member/` et `admin/` sur deux domaines/sous-domaines. Configurer les variables d'environnement côté serveur. Les paiements réels nécessitent les comptes marchands et clés des prestataires.
