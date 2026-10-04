@@ -52,10 +52,18 @@ api.post('/auth/register',async(req,res)=>{
     const exists=await c.query('SELECT id FROM users WHERE phone=$1 OR ($2::text IS NOT NULL AND lower(email)=lower($2))',[String(phone).trim(),email||null]);
     if(exists.rowCount){await c.query('ROLLBACK');return res.status(409).json({error:'Ce compte existe déjà'});}
     let referredBy=null;
-    if(referralCode){
-      const r=await c.query('SELECT id FROM users WHERE referral_code=$1',[String(referralCode).trim().toUpperCase()]);
-      if(r.rowCount) referredBy=r.rows[0].id;
+    const normalizedReferralCode=String(referralCode||'').trim().toUpperCase();
+    if(normalizedReferralCode){
+      const r=await c.query('SELECT id FROM users WHERE referral_code=$1',[normalizedReferralCode]);
+      if(!r.rowCount){
+        await c.query('ROLLBACK');
+        return res.status(400).json({error:'Code de parrainage invalide'});
+      }
+      referredBy=r.rows[0].id;
     }
+    // Chaque nouveau membre reçoit automatiquement son propre code unique.
+    // Le premier membre n'a simplement aucun parrain; son code devient disponible
+    // pour les inscriptions suivantes.
     let ref=code(fullName);
     for(let i=0;i<10;i++){if(!(await c.query('SELECT 1 FROM users WHERE referral_code=$1',[ref])).rowCount)break;ref=code(fullName);}
     const hash=await bcrypt.hash(password,12);
@@ -107,7 +115,7 @@ async function paymentQuote(userId,tontineId,amount){
     [userId,tontineId]);
   const first=!q.rows[0].has_paid;
   const admin=first?pct1(base):0;
-  const sponsor=first&&q.rows[0].has_sponsor?pct1(base):0;
+  const sponsor=first&&q.rows[0].has_sponsor?pct1(base):0; // 1% du premier versement uniquement
   return {baseAmount:base,adminCommission:admin,sponsorCommission:sponsor,totalAmount:base+admin+sponsor,firstContribution:first};
 }
 api.post('/payments/preview',auth,async(req,res)=>{
@@ -139,6 +147,19 @@ api.post('/payments',auth,async(req,res)=>{
     finally{c.release();}
   }catch(e){res.status(e.status||500).json({error:e.message||'Paiement impossible'});}
 });
+api.get('/referrals',auth,async(req,res)=>{
+  const q=await pool.query(`
+    SELECT u.id,u.full_name,u.phone,u.created_at,
+           COALESCE(SUM(CASE WHEN l.nature='SPONSOR_COMMISSION' THEN l.amount ELSE 0 END),0)::int AS commission_earned
+    FROM users u
+    LEFT JOIN ledger_entries l ON l.user_id=u.id
+    WHERE u.referred_by=$1
+    GROUP BY u.id
+    ORDER BY u.created_at DESC
+  `,[req.user.sub]);
+  const total=q.rows.reduce((sum,row)=>sum+Number(row.commission_earned||0),0);
+  res.json({referralCode:(await pool.query('SELECT referral_code FROM users WHERE id=$1',[req.user.sub])).rows[0]?.referral_code||null,referrals:q.rows,totalCommission:total,rate:1});
+});
 api.get('/payments',auth,async(req,res)=>res.json((await pool.query('SELECT * FROM payments WHERE user_id=$1 ORDER BY created_at DESC',[req.user.sub])).rows));
 api.get('/payments/:id/receipt',auth,async(req,res)=>{
   const q=await pool.query(`SELECT p.*,t.name tontine_name,u.full_name,u.phone FROM payments p JOIN tontines t ON t.id=p.tontine_id JOIN users u ON u.id=p.user_id WHERE p.id=$1 AND p.user_id=$2`,[req.params.id,req.user.sub]);
@@ -157,7 +178,13 @@ api.get('/admin/overview',auth,roles('admin','super_admin'),async(_req,res)=>{
   ]);
   res.json({members:u.rows[0].count,tontines:t.rows[0].count,confirmedPayments:p.rows[0],adminCommission:c.rows[0].total,pendingBeneficiaries:b.rows[0].count});
 });
-api.get('/admin/users',auth,roles('admin','super_admin'),async(_req,res)=>res.json((await pool.query(`SELECT id,full_name,phone,email,role,referral_code,referred_by,created_at FROM users ORDER BY created_at DESC`)).rows));
+api.get('/admin/users',auth,roles('admin','super_admin'),async(_req,res)=>res.json((await pool.query(`
+  SELECT u.id,u.full_name,u.phone,u.email,u.role,u.referral_code,u.referred_by,
+         p.full_name AS sponsor_name,u.birth_date,u.document_type,u.document_number,u.created_at
+  FROM users u
+  LEFT JOIN users p ON p.id=u.referred_by
+  ORDER BY u.created_at DESC
+`)).rows));
 api.get('/admin/tontines',auth,roles('admin','super_admin'),async(_req,res)=>res.json((await pool.query(`SELECT t.*,count(m.id)::int members FROM tontines t LEFT JOIN memberships m ON m.tontine_id=t.id GROUP BY t.id ORDER BY t.created_at DESC`)).rows));
 api.post('/admin/tontines',auth,roles('admin','super_admin'),async(req,res)=>{
   const {name,contributionAmount,frequency='monthly'}=req.body||{};
