@@ -44,7 +44,7 @@ api.get('/health',async(_req,res)=>{
 });
 
 api.post('/auth/register',async(req,res)=>{
-  const {fullName,phone,email,password,referralCode}=req.body||{};
+  const {fullName,phone,email,password,referralCode,birthDate,documentType,documentNumber}=req.body||{};
   if(!fullName||!phone||!password||String(password).length<6) return res.status(400).json({error:'Nom, téléphone et mot de passe (6 caractères minimum) requis'});
   const c=await pool.connect();
   try{
@@ -60,10 +60,10 @@ api.post('/auth/register',async(req,res)=>{
     for(let i=0;i<10;i++){if(!(await c.query('SELECT 1 FROM users WHERE referral_code=$1',[ref])).rowCount)break;ref=code(fullName);}
     const hash=await bcrypt.hash(password,12);
     const q=await c.query(
-      `INSERT INTO users(full_name,phone,email,password_hash,referral_code,referred_by)
-       VALUES($1,$2,$3,$4,$5,$6)
-       RETURNING id,full_name,phone,email,role,referral_code,created_at`,
-      [String(fullName).trim(),String(phone).trim(),email||null,hash,ref,referredBy]);
+      `INSERT INTO users(full_name,phone,email,password_hash,referral_code,referred_by,birth_date,document_type,document_number)
+       VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
+       RETURNING id,full_name,phone,email,role,referral_code,birth_date,document_type,document_number,created_at`,
+      [String(fullName).trim(),String(phone).trim(),email||null,hash,ref,referredBy,birthDate||null,documentType||null,documentNumber||null]);
     await c.query('COMMIT');
     const u=q.rows[0];
     res.status(201).json({user:u,token:tokenFor(u)});
@@ -80,7 +80,7 @@ api.post('/auth/login',async(req,res)=>{
   res.json({user:{id:u.id,full_name:u.full_name,phone:u.phone,email:u.email,role:u.role,referral_code:u.referral_code},token:tokenFor(u)});
 });
 api.get('/me',auth,async(req,res)=>{
-  const q=await pool.query('SELECT id,full_name,phone,email,role,referral_code,created_at FROM users WHERE id=$1',[req.user.sub]);
+  const q=await pool.query('SELECT id,full_name,phone,email,role,referral_code,birth_date,document_type,document_number,created_at FROM users WHERE id=$1',[req.user.sub]);
   if(!q.rowCount)return res.status(404).json({error:'Utilisateur introuvable'});res.json(q.rows[0]);
 });
 
