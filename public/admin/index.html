@@ -41,6 +41,24 @@ body:before{content:"";position:fixed;inset:-20%;pointer-events:none;opacity:.28
 .loginbox{position:relative;z-index:1;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #fff;box-shadow:0 30px 80px #001b3855}
 .loginbox .big{width:82px;height:82px;margin:0 auto 8px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(145deg,#f9da7a,#c88d27);box-shadow:inset 4px 4px 8px #fff7,10px 14px 25px #7d5a1d35}
 
+
+/* === 3D MAQUETTE REFERENCE — ADMIN === */
+body{background:#e5edf7!important}
+.main{padding:26px 28px!important}
+.side{width:265px!important;background:
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='900' viewBox='0 0 400 900'%3E%3Cdefs%3E%3CradialGradient id='g'%3E%3Cstop stop-color='%234c98ed' stop-opacity='.5'/%3E%3Cstop offset='1' stop-color='%234c98ed' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='400' height='900' fill='%23071f42'/%3E%3Ccircle cx='330' cy='120' r='250' fill='url(%23g)'/%3E%3Ccircle cx='40' cy='760' r='180' fill='%23f4c45d' opacity='.12'/%3E%3C/svg%3E") center/cover!important}
+.brand{padding:14px 12px 28px!important}
+.logo{width:54px!important;height:54px!important;border-radius:18px!important}
+.nav{gap:9px!important}
+.nav button{padding:14px 12px!important;border-radius:16px!important;font-size:14px!important}
+.nav span{font-size:22px!important;width:34px!important}
+.nav button.on{background:linear-gradient(145deg,#ffffff30,#ffffff0b)!important;box-shadow:inset 2px 2px 4px #fff3,8px 10px 20px #00162f33!important}
+.grid{gap:16px!important}
+.stat{min-height:125px!important;border-radius:22px!important;padding:19px!important}
+.card{border-radius:22px!important;padding:19px!important}
+.btn{border-radius:14px!important;padding:12px 16px!important}
+.top h1{font-size:29px!important}
+
 </style></head>
 <body>
 <div id="login" class="login"><div class="loginbox"><div class="big">🌿</div><h1>Tontine Digital 1.0</h1><p>Espace sécurisé d'administration</p><input id="id" placeholder="Email ou téléphone"><input id="pw" type="password" placeholder="Mot de passe"><button class="btn" onclick="login()">Se connecter</button><div id="msg" class="msg"></div></div></div>
