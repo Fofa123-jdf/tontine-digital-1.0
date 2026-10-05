@@ -59,6 +59,41 @@ body:before{content:"";position:fixed;inset:-20%;pointer-events:none;opacity:.28
 .authbox{position:relative;z-index:1;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #fff;box-shadow:0 30px 80px #002e2355}
 .authlogo{width:78px;height:78px;margin:0 auto 8px;border-radius:25px;display:grid;place-items:center;background:linear-gradient(145deg,#f9da7a,#c88d27);box-shadow:inset 4px 4px 8px #fff7,10px 14px 25px #7d5a1d35}
 
+
+/* === 3D MAQUETTE REFERENCE — MEMBER === */
+body{background:#dfeae5!important}
+.app{position:relative;min-height:100vh;background:
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='1000' viewBox='0 0 700 1000'%3E%3Cdefs%3E%3CradialGradient id='a'%3E%3Cstop stop-color='%23f6d77a' stop-opacity='.42'/%3E%3Cstop offset='1' stop-color='%23f6d77a' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='b'%3E%3Cstop stop-color='%230b9b70' stop-opacity='.30'/%3E%3Cstop offset='1' stop-color='%230b9b70' stop-opacity='0'/%3E%3C/defs%3E%3Crect width='700' height='1000' fill='%23eef7f3'/%3E%3Ccircle cx='560' cy='100' r='240' fill='url(%23a)'/%3E%3Ccircle cx='70' cy='820' r='260' fill='url(%23b)'/%3E%3Cpath d='M0 300 Q180 180 370 300 T700 280 V0 H0Z' fill='%23ffffff' opacity='.48'/%3E%3C/svg%3E") center/cover fixed!important}
+.top{min-height:190px;padding:24px 20px 30px!important;border-radius:0 0 38px 38px!important}
+.top:before{width:205px!important;height:205px!important;right:-82px!important;top:-92px!important}
+.top:after{width:150px!important;height:150px!important;right:75px!important;bottom:-82px!important}
+.screen{padding:20px 18px 100px!important}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px!important}
+.menu{min-height:142px!important;padding:17px!important;border-radius:24px!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:flex-start!important}
+.menu .ico{width:62px!important;height:62px!important;border-radius:20px!important;margin-bottom:8px!important;box-shadow:8px 10px 18px rgba(22,66,52,.16),inset 4px 4px 8px #fff,inset -5px -5px 9px #b5cec4!important}
+.menu:nth-child(1) .ico{background:linear-gradient(145deg,#d9f4e9,#7acaaa)!important}
+.menu:nth-child(2) .ico{background:linear-gradient(145deg,#fff0bd,#e6a936)!important}
+.menu:nth-child(3) .ico{background:linear-gradient(145deg,#e5f0ff,#8ab0e7)!important}
+.menu:nth-child(4) .ico{background:linear-gradient(145deg,#e9ddff,#aa82df)!important}
+.menu:nth-child(5) .ico{background:linear-gradient(145deg,#ffe0e0,#e68c8c)!important}
+.menu:nth-child(6) .ico{background:linear-gradient(145deg,#d8f3ff,#72b9df)!important}
+.menu:nth-child(7) .ico{background:linear-gradient(145deg,#fff0c9,#edbd55)!important}
+.menu:nth-child(8) .ico{background:linear-gradient(145deg,#dff3e9,#77b998)!important}
+.menu .ico{font-size:0!important;position:relative}
+.menu .ico:after{content:"";width:34px;height:34px;display:block;background-size:contain;background-repeat:no-repeat;background-position:center;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.18))}
+.menu:nth-child(1) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23065f47' stroke-width='4'%3E%3Ccircle cx='24' cy='24' r='9'/%3E%3Ccircle cx='42' cy='29' r='7'/%3E%3Cpath d='M8 48c2-10 10-15 17-15s15 5 17 15M37 45c1-6 6-10 12-10 5 0 9 3 11 8'/%3E%3C/g%3E%3C/svg%3E")}
+.menu:nth-child(2) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='7' y='15' width='50' height='34' rx='7' fill='%23fff' stroke='%2373500c' stroke-width='4'/%3E%3Cpath d='M8 25h49' stroke='%2373500c' stroke-width='4'/%3E%3Ccircle cx='44' cy='38' r='5' fill='%23f4c45d'/%3E%3C/svg%3E")}
+.menu:nth-child(3) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M9 51V34M25 51V24M41 51V16M57 51V8' stroke='%231f5da8' stroke-width='7' stroke-linecap='round'/%3E%3Cpath d='M7 44l14-12 15 5 19-21' fill='none' stroke='%23f4c45d' stroke-width='5'/%3E%3C/svg%3E")}
+.menu:nth-child(4) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M17 27a15 15 0 0 1 30 0v10l6 8H11l6-8Z' fill='%23fff' stroke='%236c459b' stroke-width='4'/%3E%3Cpath d='M25 52c2 5 12 5 14 0' stroke='%236c459b' stroke-width='4'/%3E%3C/svg%3E")}
+.menu:nth-child(5) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='25' cy='24' r='9' fill='%23fff' stroke='%23a33' stroke-width='4'/%3E%3Ccircle cx='42' cy='28' r='7' fill='%23fff' stroke='%23a33' stroke-width='4'/%3E%3Cpath d='M8 51c2-10 10-15 17-15s15 5 17 15M36 51c1-6 5-10 11-10 5 0 9 3 10 8' fill='none' stroke='%23a33' stroke-width='4'/%3E%3C/svg%3E")}
+.menu:nth-child(6) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M9 17h46v32H9z' rx='6' fill='%23fff' stroke='%23215f87' stroke-width='4'/%3E%3Cpath d='M15 25h34M15 34h25M15 43h16' stroke='%23215f87' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E")}
+.menu:nth-child(7) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M18 8h28v48H18z' fill='%23fff' stroke='%23a36d0e' stroke-width='4'/%3E%3Ccircle cx='32' cy='24' r='7' fill='%23f4c45d'/%3E%3Cpath d='M25 38h14M25 45h10' stroke='%23a36d0e' stroke-width='4'/%3E%3C/svg%3E")}
+.menu:nth-child(8) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='22' r='11' fill='%23fff' stroke='%23065f47' stroke-width='4'/%3E%3Cpath d='M12 55c3-13 12-19 20-19s17 6 20 19' fill='%23fff' stroke='%23065f47' stroke-width='4'/%3E%3C/svg%3E")}
+.title h2{font-size:23px!important}
+.card{border-radius:23px!important;padding:18px!important}
+.bottom{height:74px!important;border-radius:24px 24px 0 0!important;padding-top:10px!important}
+.bottom button span{font-size:23px!important}
+
 </style></head>
 <body>
 <div id="auth" class="auth"><div class="authbox">
