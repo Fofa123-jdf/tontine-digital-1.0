@@ -265,32 +265,9 @@ app.get('/admin',(_req,res)=>res.sendFile(path.join(__dirname,'public/admin/inde
 app.get('/member',(_req,res)=>res.sendFile(path.join(__dirname,'public/member/index.html')));
 app.get('/',(_req,res)=>res.sendFile(path.join(__dirname,'public/index.html')));
 
-async function resetTestData(){
-  const c=await pool.connect();
-  try{
-    await c.query('BEGIN');
-    // Réinitialisation contrôlée de l'environnement de test : les comptes admin sont conservés.
-    await c.query('DELETE FROM ledger_entries');
-    await c.query('DELETE FROM beneficiary_payments');
-    await c.query('DELETE FROM payments');
-    await c.query('DELETE FROM memberships');
-    await c.query('DELETE FROM notifications');
-    await c.query('DELETE FROM audit_logs');
-    await c.query('DELETE FROM collection_accounts');
-    await c.query('DELETE FROM tontines');
-    await c.query("DELETE FROM users WHERE role='member'");
-    await c.query('COMMIT');
-    console.log('TEST DATA RESET: members, tontines, memberships, payments, ledger, collection accounts, beneficiary orders, notifications and audit logs cleared; admin accounts preserved.');
-  }catch(e){
-    await c.query('ROLLBACK');
-    throw e;
-  }finally{c.release();}
-}
-
 async function bootstrap(){
   const schema=fs.readFileSync(path.join(__dirname,'schema.sql'),'utf8');
   await pool.query(schema);
-  if(process.env.RESET_TEST_DATA_ON_BOOT==='true') await resetTestData();
   if(process.env.ADMIN_BOOTSTRAP_EMAIL&&process.env.ADMIN_BOOTSTRAP_PASSWORD){
     const exists=await pool.query('SELECT id FROM users WHERE lower(email)=lower($1)',[process.env.ADMIN_BOOTSTRAP_EMAIL]);
     if(!exists.rowCount){
