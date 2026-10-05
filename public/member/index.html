@@ -17,6 +17,48 @@ input,select{width:100%;padding:13px;border:1px solid #d6e3de;border-radius:12px
 .auth{min-height:100vh;display:flex;align-items:center;padding:18px;background:linear-gradient(160deg,#075f47,#087f5b)}.authbox{width:min(500px,100%);margin:auto;background:#fff;border-radius:28px;padding:22px;box-shadow:0 20px 50px #0003}.authlogo{text-align:center;font-size:42px}.auth h1{text-align:center;margin:5px 0}.auth .sub{text-align:center;color:var(--muted);margin-bottom:18px}.authtabs{display:flex;background:#edf5f2;border-radius:12px;padding:4px;margin-bottom:12px}.authtabs button{flex:1;padding:10px;border-radius:9px;background:transparent}.authtabs .on{background:#fff;color:var(--g);font-weight:700}.terms{font-size:11px;color:var(--muted);line-height:1.5}.msg{min-height:20px;color:#b33;font-size:13px}.toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);background:#17352d;color:white;padding:12px 16px;border-radius:12px;z-index:30;display:none}
 .list{display:flex;flex-direction:column;gap:8px}.item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}.item strong{display:block}.item small{color:var(--muted)}
 table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;padding:9px;border-bottom:1px solid var(--line)}.scroll{overflow:auto}.empty{text-align:center;color:var(--muted);padding:22px}
+
+/* === TONTINE DIGITAL 3D VISUAL THEME === */
+:root{--g:#087f5b;--g2:#064c3b;--gold:#f4c45d;--gold2:#d99a28;--bg:#eef6f2;--ink:#15372d;--muted:#71867e;--card:rgba(255,255,255,.88);--line:rgba(255,255,255,.65)}
+html{background:#dfece7}
+body{min-height:100vh;background:
+ radial-gradient(circle at 15% 8%,rgba(244,196,93,.25),transparent 24%),
+ radial-gradient(circle at 92% 18%,rgba(8,127,91,.24),transparent 30%),
+ linear-gradient(135deg,#e9f5f0 0%,#f8fbfa 48%,#e3f0eb 100%);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:-20%;pointer-events:none;opacity:.28;background:
+ radial-gradient(ellipse at 30% 30%,rgba(255,255,255,.9),transparent 35%),
+ radial-gradient(ellipse at 75% 65%,rgba(8,127,91,.18),transparent 34%);
+ filter:blur(30px);transform:rotate(-8deg);z-index:-1}
+.app{background:transparent}
+.top{position:relative;overflow:hidden;background:
+ linear-gradient(145deg,#043f31 0%,#087f5b 54%,#18a477 100%);
+ box-shadow:0 18px 40px rgba(4,63,49,.22);border-radius:0 0 34px 34px}
+.top:before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-65px;top:-80px;background:radial-gradient(circle at 35% 35%,#fff8,transparent 28%),linear-gradient(145deg,#f7d77a,#c98b1f);box-shadow:-22px 28px 45px #003c2d66;transform:rotate(18deg);opacity:.9}
+.top:after{content:"";position:absolute;width:130px;height:130px;border-radius:35px;right:70px;bottom:-72px;background:linear-gradient(145deg,#ffffff30,#ffffff08);transform:rotate(35deg);box-shadow:inset 10px 10px 20px #ffffff25}
+.brand,.hello{position:relative;z-index:1}
+.logo{background:linear-gradient(145deg,#fff5,#fff1);box-shadow:inset 2px 2px 6px #fff5,6px 9px 18px #003d2c55;border:1px solid #ffffff35}
+.screen{position:relative;z-index:1;padding-top:18px}.screen-orb{position:fixed;pointer-events:none;border-radius:50%;z-index:0;filter:blur(1px);opacity:.22}.orb-a{width:120px;height:120px;right:-45px;top:190px;background:linear-gradient(145deg,#f4c45d,#c98b1f);box-shadow:-15px 20px 35px #6d501b33}.orb-b{width:90px;height:90px;left:-40px;bottom:170px;background:linear-gradient(145deg,#1bb687,#075f47);box-shadow:15px 15px 30px #075f4733}
+.card,.menu{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;box-shadow:0 12px 28px rgba(24,66,53,.10),inset 1px 1px 0 #fff}
+.card{position:relative;overflow:hidden}
+.card:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,#fff5,transparent 35%);opacity:.65}
+.menu{position:relative;overflow:hidden;min-height:125px;transition:transform .18s,box-shadow .18s}
+.menu:before{content:"";position:absolute;width:80px;height:80px;right:-24px;top:-28px;border-radius:28px;background:linear-gradient(145deg,#f8d97e,#c88c25);opacity:.13;transform:rotate(35deg)}
+.menu:active{transform:translateY(2px) scale(.985)}
+.menu .ico{width:50px;height:50px;display:grid;place-items:center;border-radius:17px;font-size:27px;background:linear-gradient(145deg,#ffffff,#dcece6);box-shadow:7px 8px 15px #17352d18,inset 3px 3px 5px #fff,inset -4px -4px 7px #b6d1c7;color:var(--g2)}
+.menu b,.menu small{position:relative;z-index:1}
+.stat{background:linear-gradient(145deg,#f6fbf9,#e5f3ed);box-shadow:inset 2px 2px 5px #fff,7px 9px 20px #17352d12}
+.pill{background:linear-gradient(145deg,#fff2c9,#f4d77d);color:#73500c;box-shadow:inset 1px 1px 2px #fff,3px 4px 8px #9b741c22}
+.primary{background:linear-gradient(145deg,#0b9b70,#05664d);box-shadow:0 8px 18px #087f5b30,inset 1px 1px 2px #fff5}
+.secondary{background:linear-gradient(145deg,#fff,#e1f0eb);box-shadow:4px 5px 10px #17352d12,inset 1px 1px 2px #fff}
+.bottom{background:rgba(255,255,255,.86);backdrop-filter:blur(18px);box-shadow:0 -8px 25px #17352d12}
+.auth{position:relative;overflow:hidden;background:
+ radial-gradient(circle at 78% 16%,#f4c45d55,transparent 24%),
+ radial-gradient(circle at 18% 85%,#21b78855,transparent 30%),
+ linear-gradient(145deg,#043f31,#087f5b)}
+.auth:before{content:"";position:absolute;width:270px;height:270px;right:-80px;top:-70px;border-radius:50%;background:linear-gradient(145deg,#f8d979,#bf7f17);box-shadow:-30px 35px 60px #002e2366;opacity:.9}
+.authbox{position:relative;z-index:1;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #fff;box-shadow:0 30px 80px #002e2355}
+.authlogo{width:78px;height:78px;margin:0 auto 8px;border-radius:25px;display:grid;place-items:center;background:linear-gradient(145deg,#f9da7a,#c88d27);box-shadow:inset 4px 4px 8px #fff7,10px 14px 25px #7d5a1d35}
+
 </style></head>
 <body>
 <div id="auth" class="auth"><div class="authbox">
@@ -44,7 +86,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
 
 <div id="app" class="app hidden">
 <header class="top"><div class="brand"><div class="logo">🌿</div><div><h1>Tontine Digital</h1><small>Espace membre</small></div></div><div class="hello"><p>Bienvenue</p><h2 id="welcome">Membre</h2></div></header>
-<main class="screen">
+<div class="screen-orb orb-a"></div><div class="screen-orb orb-b"></div><main class="screen">
 <section id="home" class="view active">
 <div class="title"><h2>Accueil</h2><span class="pill" id="refPill">Parrain</span></div>
 <div class="grid">
