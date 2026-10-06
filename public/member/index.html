@@ -36,7 +36,7 @@ body:before{content:"";position:fixed;inset:-20%;pointer-events:none;opacity:.28
 .top:before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-65px;top:-80px;background:radial-gradient(circle at 35% 35%,#fff8,transparent 28%),linear-gradient(145deg,#f7d77a,#c98b1f);box-shadow:-22px 28px 45px #003c2d66;transform:rotate(18deg);opacity:.9}
 .top:after{content:"";position:absolute;width:130px;height:130px;border-radius:35px;right:70px;bottom:-72px;background:linear-gradient(145deg,#ffffff30,#ffffff08);transform:rotate(35deg);box-shadow:inset 10px 10px 20px #ffffff25}
 .brand,.hello{position:relative;z-index:1}
-.logo{background:linear-gradient(145deg,#fff5,#fff1);box-shadow:inset 2px 2px 6px #fff5,6px 9px 18px #003d2c55;border:1px solid #ffffff35}
+.logo{display:grid;place-items:center;font-size:0;background:linear-gradient(145deg,#fff5,#fff1);box-shadow:inset 2px 2px 6px #fff5,6px 9px 18px #003d2c55;border:1px solid #ffffff35}
 .screen{position:relative;z-index:1;padding-top:18px}.screen-orb{position:fixed;pointer-events:none;border-radius:50%;z-index:0;filter:blur(1px);opacity:.22}.orb-a{width:120px;height:120px;right:-45px;top:190px;background:linear-gradient(145deg,#f4c45d,#c98b1f);box-shadow:-15px 20px 35px #6d501b33}.orb-b{width:90px;height:90px;left:-40px;bottom:170px;background:linear-gradient(145deg,#1bb687,#075f47);box-shadow:15px 15px 30px #075f4733}
 .card,.menu{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;box-shadow:0 12px 28px rgba(24,66,53,.10),inset 1px 1px 0 #fff}
 .card{position:relative;overflow:hidden}
@@ -57,7 +57,7 @@ body:before{content:"";position:fixed;inset:-20%;pointer-events:none;opacity:.28
  linear-gradient(145deg,#043f31,#087f5b)}
 .auth:before{content:"";position:absolute;width:270px;height:270px;right:-80px;top:-70px;border-radius:50%;background:linear-gradient(145deg,#f8d979,#bf7f17);box-shadow:-30px 35px 60px #002e2366;opacity:.9}
 .authbox{position:relative;z-index:1;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #fff;box-shadow:0 30px 80px #002e2355}
-.authlogo{width:78px;height:78px;margin:0 auto 8px;border-radius:25px;display:grid;place-items:center;background:linear-gradient(145deg,#f9da7a,#c88d27);box-shadow:inset 4px 4px 8px #fff7,10px 14px 25px #7d5a1d35}
+.authlogo span{font-size:24px;font-weight:900;color:#6d4d0b}.authlogo{width:78px;height:78px;margin:0 auto 8px;border-radius:25px;display:grid;place-items:center;background:linear-gradient(145deg,#f9da7a,#c88d27);box-shadow:inset 4px 4px 8px #fff7,10px 14px 25px #7d5a1d35}
 
 
 /* === 3D MAQUETTE REFERENCE — MEMBER === */
@@ -89,7 +89,7 @@ body{background:#dfeae5!important}
 .menu:nth-child(6) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M9 17h46v32H9z' rx='6' fill='%23fff' stroke='%23215f87' stroke-width='4'/%3E%3Cpath d='M15 25h34M15 34h25M15 43h16' stroke='%23215f87' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E")}
 .menu:nth-child(7) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M18 8h28v48H18z' fill='%23fff' stroke='%23a36d0e' stroke-width='4'/%3E%3Ccircle cx='32' cy='24' r='7' fill='%23f4c45d'/%3E%3Cpath d='M25 38h14M25 45h10' stroke='%23a36d0e' stroke-width='4'/%3E%3C/svg%3E")}
 .menu:nth-child(8) .ico:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='22' r='11' fill='%23fff' stroke='%23065f47' stroke-width='4'/%3E%3Cpath d='M12 55c3-13 12-19 20-19s17 6 20 19' fill='%23fff' stroke='%23065f47' stroke-width='4'/%3E%3C/svg%3E")}
-.title h2{font-size:23px!important}
+.hero3d{position:relative;min-height:156px;margin:0 0 16px;border-radius:30px;overflow:hidden;padding:20px;background:linear-gradient(145deg,#064c3b,#087f5b 58%,#16a477);box-shadow:0 18px 34px rgba(4,63,49,.22),inset 1px 1px 0 #ffffff55;color:#fff;display:flex;align-items:center;justify-content:space-between}.hero3d:before{content:"";position:absolute;width:190px;height:190px;right:-70px;top:-70px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#fff8,transparent 18%),linear-gradient(145deg,#f8da7b,#c58a22);box-shadow:-18px 20px 40px #003d2c66}.hero3d:after{content:"";position:absolute;width:210px;height:80px;left:-35px;bottom:-45px;border-radius:50%;background:#fff2;transform:rotate(-10deg);filter:blur(2px)}.hero3d-copy{position:relative;z-index:1;max-width:72%;display:flex;flex-direction:column;gap:5px}.hero3d-copy span{font-size:11px;text-transform:uppercase;letter-spacing:1px;opacity:.75}.hero3d-copy strong{font-size:22px;line-height:1.12}.hero3d-copy small{font-size:11px;line-height:1.4;opacity:.82}.hero3d-coin{position:relative;z-index:2;width:62px;height:62px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#ffe38c,#c98d27);color:#6e4c09;font-size:20px;font-weight:900;box-shadow:inset 4px 4px 7px #fff8,8px 12px 20px #3b2a0c44}.quick3d{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0 2px}.quick3d button{padding:11px 7px;border-radius:15px;background:linear-gradient(145deg,#fff,#e4f1ed);color:#174d3d;font-size:11px;font-weight:800;box-shadow:5px 7px 14px #17352d12,inset 1px 1px 2px #fff}.quick3d button span{display:block;font-size:19px;margin-bottom:3px;color:#c88d27}.title h2{font-size:23px!important}
 .card{border-radius:23px!important;padding:18px!important}
 .bottom{height:74px!important;border-radius:24px 24px 0 0!important;padding-top:10px!important}
 .bottom button span{font-size:23px!important}
@@ -97,7 +97,7 @@ body{background:#dfeae5!important}
 </style></head>
 <body>
 <div id="auth" class="auth"><div class="authbox">
-<div class="authlogo">🌿</div><h1>Tontine Digital 1.0</h1><p class="sub">Épargne collective simple, transparente et sécurisée.</p>
+<div class="authlogo"><span>TD</span></div><h1>Tontine Digital 1.0</h1><p class="sub">Épargne collective simple, transparente et sécurisée.</p>
 <div class="authtabs"><button id="tabReg" class="on" onclick="authMode('reg')">Inscription</button><button id="tabLogin" onclick="authMode('login')">Connexion</button></div>
 <div id="registerForm">
 <label>Nom complet</label><input id="name" placeholder="Votre nom et prénom">
@@ -120,20 +120,20 @@ body{background:#dfeae5!important}
 </div></div>
 
 <div id="app" class="app hidden">
-<header class="top"><div class="brand"><div class="logo">🌿</div><div><h1>Tontine Digital</h1><small>Espace membre</small></div></div><div class="hello"><p>Bienvenue</p><h2 id="welcome">Membre</h2></div></header>
+<header class="top"><div class="brand"><div class="logo"><span>TD</span></div><div><h1>Tontine Digital</h1><small>Espace membre</small></div></div><div class="hello"><p>Bienvenue</p><h2 id="welcome">Membre</h2></div></header>
 <div class="screen-orb orb-a"></div><div class="screen-orb orb-b"></div><main class="screen">
 <section id="home" class="view active">
 <div class="title"><h2>Accueil</h2><span class="pill" id="refPill">Parrain</span></div>
+<div class="hero3d"><div class="hero3d-copy"><span>Votre épargne collective</span><strong>Ensemble pour un avenir meilleur</strong><small>Suivez vos tontines, cotisez et développez vos projets en toute simplicité.</small></div><div class="hero3d-coin">TD</div></div>
 <div class="grid">
 <button class="menu" onclick="go('tontines')"><span class="ico">👥</span><b>Mes tontines</b><small>Participer et suivre</small></button>
-<button class="menu" onclick="go('cotisation')"><span class="ico">💳</span><b>Cotiser</b><small>Payer ma cotisation</small></button>
-<button class="menu" onclick="go('historique')"><span class="ico">📊</span><b>Historique</b><small>Mes opérations</small></button>
-<button class="menu" onclick="go('calendrier')"><span class="ico">📅</span><b>Calendrier</b><small>Mes prochaines échéances</small></button>
+<button class="menu" onclick="go('cotisation')"><span class="ico">💳</span><b>Cotisations</b><small>Payer ma cotisation</small></button>
 <button class="menu" onclick="go('parrainage')"><span class="ico">🤝</span><b>Parrainage</b><small>Inviter un proche</small></button>
-<button class="menu" onclick="go('communaute')"><span class="ico">💬</span><b>Communauté</b><small>Échanger avec le groupe</small></button>
+<button class="menu" onclick="go('communaute')"><span class="ico">💬</span><b>Discussion</b><small>Échanger avec le groupe</small></button>
 <button class="menu" onclick="go('notifications')"><span class="ico">🔔</span><b>Notifications</b><small>Alertes importantes</small></button>
 <button class="menu" onclick="go('profil')"><span class="ico">👤</span><b>Mon profil</b><small>Mes informations</small></button>
 </div>
+<div class="quick3d"><button onclick="go('historique')"><span>↗</span>Historique</button><button onclick="go('calendrier')"><span>◷</span>Calendrier</button><button onclick="go('parametres')"><span>⚙</span>Paramètres</button></div>
 <div class="card"><b>Mon code parrain</b><div class="amount" id="myref">—</div><small class="muted">Partagez ce code à vos proches.</small></div>
 </section>
 
