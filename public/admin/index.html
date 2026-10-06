@@ -8,6 +8,22 @@
 @media(max-width:900px){.side{width:72px;padding:12px 8px}.brand div:not(.logo),.nav button em{display:none}.nav button{text-align:center}.nav span{width:auto}.main{margin-left:72px;width:calc(100% - 72px);padding:14px}.grid{grid-template-columns:repeat(2,1fr)}.accountgrid{grid-template-columns:1fr}.form{grid-template-columns:1fr}.top h1{font-size:20px}}
 @media(max-width:560px){.grid{grid-template-columns:1fr 1fr}.top p{display:none}.main{padding:10px}.card{padding:12px}.toolbar input{width:100%;min-width:0}.mobile{display:inline-block}.side{width:60px}.main{margin-left:60px;width:calc(100% - 60px)}}
 
+/* === MENU MOBILE ESCAMOTABLE === */
+.mobile-menu-btn{display:none}
+.mobile-overlay{display:none}
+@media(max-width:560px){
+  .mobile-menu-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border:0;border-radius:11px;background:#fff;color:var(--g2);font-size:22px;box-shadow:0 3px 12px rgba(25,55,85,.10);cursor:pointer}
+  .side{width:245px!important;transform:translateX(-100%);transition:transform .22s ease;z-index:20;padding:20px 14px!important}
+  .side.open{transform:translateX(0)}
+  .brand div:not(.logo),.nav button em{display:block!important}
+  .nav button{text-align:left!important}
+  .nav span{width:27px!important}
+  .main{margin-left:0!important;width:100%!important;padding:10px!important}
+  .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:15}
+  .mobile-overlay.on{display:block}
+  .top{gap:8px}
+  .top>div:first-child{flex:1}
+}
 /* === INTERFACE ADMIN CLASSIQUE — SANS 3D === */
 :root{--g:#175aa6;--g2:#0b3264;--bg:#eef4fb;--ink:#132d49;--muted:#71839a;--line:#dce7f3;--card:#fff;--red:#b33}
 body{background:var(--bg)!important;color:var(--ink)}
@@ -27,7 +43,8 @@ body{background:var(--bg)!important;color:var(--ink)}
 <body>
 <div id="login" class="login"><div class="loginbox"><div class="big">🌿</div><h1>Tontine Digital 1.0</h1><p>Espace sécurisé d'administration</p><input id="id" placeholder="Email ou téléphone"><input id="pw" type="password" placeholder="Mot de passe"><button class="btn" onclick="login()">Se connecter</button><div id="msg" class="msg"></div></div></div>
 <div id="admin" class="layout hidden">
-<aside class="side"><div class="brand"><div class="logo">🌿</div><div><b>Tontine Digital</b><small>Administration</small></div></div>
+<div id="mobileOverlay" class="mobile-overlay" onclick="toggleMobileMenu(false)"></div>
+<aside class="side" id="adminSide"><div class="brand"><div class="logo">🌿</div><div><b>Tontine Digital</b><small>Administration</small></div></div>
 <nav class="nav">
 <button class="on" onclick="go('dashboard',this)"><span>📊</span><em>Tableau de bord</em></button>
 <button onclick="go('members',this)"><span>👥</span><em>Membres</em></button>
@@ -38,7 +55,7 @@ body{background:var(--bg)!important;color:var(--ink)}
 <button onclick="go('ledger',this)"><span>📒</span><em>Journal financier</em></button>
 <button onclick="go('security',this)"><span>🔐</span><em>Sécurité</em></button>
 </nav></aside>
-<div class="admin-orb admin-orb-a"></div><div class="admin-orb admin-orb-b"></div><main class="main"><div class="top"><div><h1 id="title">Tableau de bord</h1><p id="sub">Vue générale de l'activité</p></div><button class="btn red" onclick="logout()">Déconnexion</button></div>
+<div class="admin-orb admin-orb-a"></div><div class="admin-orb admin-orb-b"></div><main class="main"><div class="top"><button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Ouvrir le menu">☰</button><div><h1 id="title">Tableau de bord</h1><p id="sub">Vue générale de l'activité</p></div><button class="btn red" onclick="logout()">Déconnexion</button></div>
 <section id="dashboard" class="view on"><div class="grid" id="stats"></div><div class="card"><h2>État du système</h2><p><span class="pill">● Administration sécurisée</span> Les données membres et financières restent dans l'espace administrateur.</p></div></section>
 <section id="members" class="view"><div class="card"><h2>👥 Membres</h2><div class="toolbar"><input id="memberSearch" placeholder="Rechercher un membre..." oninput="renderMembers()"><button class="btn light" onclick="loadUsers()">Actualiser</button></div><div class="table" id="users"></div></div></section>
 <section id="tontines" class="view"><div class="card"><h2>🔄 Créer une tontine</h2><div class="form"><input id="tn" placeholder="Nom de la tontine"><input id="ta" type="number" placeholder="Cotisation FCFA"><select id="tf"><option value="monthly">Mensuelle</option><option value="weekly">Hebdomadaire</option></select><button class="btn" onclick="createTontine()">Créer</button></div></div><div class="card"><h2>Tontines existantes</h2><div class="table" id="tontinesTable"></div></div></section>
@@ -57,6 +74,7 @@ function table(rows,cols){if(!rows.length)return '<div class="empty">Aucune donn
 async function login(){try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:$('id').value,password:$('pw').value})});const d=await r.json();if(!r.ok)throw Error(d.error);if(!['admin','super_admin'].includes(d.user.role))throw Error('Ce compte n’est pas administrateur');token=d.token;localStorage.tdAdminToken=token;show();await refresh()}catch(e){$('msg').textContent=e.message}}
 function show(){$('login').classList.add('hidden');$('admin').classList.remove('hidden')}
 async function refresh(){try{const o=await req('/admin/overview');$('stats').innerHTML='<div class="stat"><small>Membres</small><b>'+o.members+'</b></div><div class="stat"><small>Tontines</small><b>'+o.tontines+'</b></div><div class="stat"><small>Paiements confirmés</small><b>'+o.confirmedPayments.count+'</b></div><div class="stat"><small>Total confirmé</small><b>'+o.confirmedPayments.total+' FCFA</b></div><div class="stat"><small>Commission admin</small><b>'+o.adminCommission+' FCFA</b></div><div class="stat"><small>Ordres en attente</small><b>'+o.pendingBeneficiaries+'</b></div>';await Promise.all([loadUsers(),loadTontines(),loadPayments(),loadLedger(),loadAccounts(),loadBeneficiaries()])}catch(e){toast(e.message)}}
+function toggleMobileMenu(force){const side=document.getElementById('adminSide');const overlay=document.getElementById('mobileOverlay');if(!side||!overlay)return;const open=force===undefined?!side.classList.contains('open'):!!force;side.classList.toggle('open',open);overlay.classList.toggle('on',open);}
 function go(id,btn){document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));if(btn)btn.classList.add('on');const titles={dashboard:['Tableau de bord','Vue générale de l’activité'],members:['Membres','Gestion des comptes membres'],tontines:['Tontines','Création et suivi des groupes'],payments:['Cotisations','Suivi des paiements et commissions'],beneficiaries:['Bénéficiaires','Préparation et validation des paiements'],accounts:['Comptes de collecte','Orange Money, MTN Money, Wave et autres comptes'],ledger:['Journal financier','Traçabilité des mouvements'],security:['Sécurité','Contrôle des accès administrateurs']};$('title').textContent=titles[id][0];$('sub').textContent=titles[id][1];scrollTo(0,0)}
 async function loadUsers(){users=await req('/admin/users');renderMembers()}
 function renderMembers(){const q=($('memberSearch')?.value||'').toLowerCase();const rows=users.filter(x=>[x.full_name,x.phone,x.email,x.referral_code].join(' ').toLowerCase().includes(q));$('users').innerHTML=table(rows,[['full_name','Nom'],['phone','Téléphone'],['email','Email'],['role','Rôle'],['referral_code','Code parrain'],['birth_date','Naissance'],['document_type','Document'],['document_number','N° document'],['created_at','Créé le']])}
