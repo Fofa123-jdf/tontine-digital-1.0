@@ -285,7 +285,7 @@ api.post('/admin/beneficiary-payments/:id/reject',auth,roles('admin','super_admi
 api.post('/admin/beneficiary-payments/:id/mark-paid',auth,roles('admin','super_admin'),async(req,res)=>{
   const ref=String(req.body?.reference||'').trim();if(!ref)return res.status(400).json({error:'Référence de paiement requise'});
   const q=await pool.query(`UPDATE beneficiary_payments SET status='PAID',payment_reference=$2 WHERE id=$1 AND status IN ('APPROVED','PAYMENT_IN_PROGRESS') RETURNING *`,[req.params.id,ref]);
-  if(!q.rowCount)return res.status(409).json({error:'Ordre introuvable ou état invalide'});res.json(q.rows[0]);
+  if(!q.rowCount)return res.status(409).json({error:'Ordre introuvable ou état invalide'});await notify(q.rows[0].beneficiary_user_id,'PAYOUT_PAID','Paiement bénéficiaire effectué','Votre paiement de '+q.rows[0].amount+' FCFA a été marqué comme payé. Référence : '+ref+'.');await audit(req.user.sub,'MARK_BENEFICIARY_PAID','beneficiary_payment',q.rows[0].id,{reference:ref});res.json(q.rows[0]);
 });
 api.post('/admin/beneficiary-payments/:id/confirm',auth,roles('admin','super_admin'),async(req,res)=>{
   const q=await pool.query(`UPDATE beneficiary_payments SET status='CONFIRMED',payment_reference=COALESCE($2,payment_reference) WHERE id=$1 AND status='PAID' RETURNING *`,[req.params.id,req.body?.reference||null]);
