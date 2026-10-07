@@ -37,6 +37,33 @@ async function audit(actor,action,type,id,details={}){try{await pool.query(
  'INSERT INTO audit_logs(actor_user_id,action,entity_type,entity_id,details) VALUES($1,$2,$3,$4,$5)',
  [actor||null,action,type||null,id||null,details]);}catch{}}
 function validAmount(n){return Number.isInteger(money(n))&&money(n)>0;}
+async function notify(userId,type,title,body){
+  if(!userId)return;
+  await pool.query('INSERT INTO notifications(user_id,type,title,body) VALUES($1,$2,$3,$4)',[userId,type,title,body]);
+}
+async function generateDueNotifications(){
+  try{
+    const rows=await pool.query("SELECT m.user_id,m.tontine_id,t.name,t.frequency,COALESCE((SELECT MAX(p.confirmed_at) FROM payments p WHERE p.user_id=m.user_id AND p.tontine_id=m.tontine_id AND p.status='CONFIRMED'),m.joined_at) AS anchor FROM memberships m JOIN tontines t ON t.id=m.tontine_id WHERE t.active=true");
+    const now=Date.now();
+    for(const x of rows.rows){
+      const days=x.frequency==='weekly'?7:30;
+      const due=new Date(new Date(x.anchor).getTime()+days*86400000);
+      const diff=due.getTime()-now;
+      if(diff<=86400000){
+        const type=diff<0?'PAYMENT_OVERDUE':'PAYMENT_DUE';
+        const title=diff<0?'Cotisation en retard':'Cotisation à venir';
+        const body=diff<0?'Votre cotisation pour '+x.name+' est en retard. Échéance prévue le '+due.toISOString().slice(0,10)+'.':'Votre prochaine cotisation pour '+x.name+' est prévue le '+due.toISOString().slice(0,10)+'.';
+        const exists=await pool.query('SELECT 1 FROM notifications WHERE user_id=$1 AND type=$2 AND created_at::date=CURRENT_DATE LIMIT 1',[x.user_id,type]);
+        if(!exists.rowCount) await notify(x.user_id,type,title,body);
+      }
+    }
+    const ben=await pool.query("SELECT beneficiary_user_id,amount,due_date,t.name FROM beneficiary_payments b JOIN tontines t ON t.id=b.tontine_id WHERE b.status IN ('SCHEDULED','PREPARED','PENDING_ADMIN_VALIDATION','APPROVED') AND b.due_date<=CURRENT_DATE+1");
+    for(const x of ben.rows){
+      const exists=await pool.query('SELECT 1 FROM notifications WHERE user_id=$1 AND type=$2 AND created_at::date=CURRENT_DATE LIMIT 1',[x.beneficiary_user_id,'PAYOUT_DUE']);
+      if(!exists.rowCount) await notify(x.beneficiary_user_id,'PAYOUT_DUE','Tour de paiement à venir','Votre paiement bénéficiaire de '+x.amount+' FCFA pour '+x.name+' est prévu le '+x.due_date+'.');
+    }
+  }catch(e){console.error('NOTIFICATION JOB ERROR:',e.message);}
+}
 
 api.get('/health',async(_req,res)=>{
   try{await pool.query('SELECT 1');res.json({ok:true,service:'tontine-digital-api',database:'connected',version:'1.0.1'});}
@@ -253,7 +280,7 @@ async function beneficiaryUpdate(req,res,nextStatus,allowed){
   const q=await pool.query(`UPDATE beneficiary_payments SET status=$2 WHERE id=$1 AND status=ANY($3::text[]) RETURNING *`,[req.params.id,nextStatus,allowed]);
   if(!q.rowCount)return res.status(409).json({error:'Ordre introuvable ou état invalide'});res.json(q.rows[0]);
 }
-api.post('/admin/beneficiary-payments/:id/approve',auth,roles('admin','super_admin'),(req,res)=>beneficiaryUpdate(req,res,'APPROVED',['SCHEDULED','PREPARED','PENDING_ADMIN_VALIDATION']));
+api.post('/admin/beneficiary-payments/:id/approve',auth,roles('admin','super_admin'),async(req,res)=>{const q=await pool.query(`UPDATE beneficiary_payments SET status='APPROVED' WHERE id=$1 AND status=ANY($2::text[]) RETURNING *`,[req.params.id,['SCHEDULED','PREPARED','PENDING_ADMIN_VALIDATION']]);if(!q.rowCount)return res.status(409).json({error:'Ordre introuvable ou état invalide'});await notify(q.rows[0].beneficiary_user_id,'PAYOUT_APPROVED','Paiement bénéficiaire validé','Votre paiement de '+q.rows[0].amount+' FCFA a été validé par l’administration.');await audit(req.user.sub,'APPROVE_BENEFICIARY_PAYMENT','beneficiary_payment',q.rows[0].id);res.json(q.rows[0]);});
 api.post('/admin/beneficiary-payments/:id/reject',auth,roles('admin','super_admin'),(req,res)=>beneficiaryUpdate(req,res,'REJECTED',['SCHEDULED','PREPARED','PENDING_ADMIN_VALIDATION','APPROVED']));
 api.post('/admin/beneficiary-payments/:id/mark-paid',auth,roles('admin','super_admin'),async(req,res)=>{
   const ref=String(req.body?.reference||'').trim();if(!ref)return res.status(400).json({error:'Référence de paiement requise'});
@@ -295,6 +322,6 @@ async function bootstrap(){
     }
   }
 }
-app.listen(PORT,'0.0.0.0',async()=>{try{await bootstrap();console.log(`Tontine Digital API listening on ${PORT}`)}catch(e){console.error('BOOTSTRAP ERROR:',e.message)}});
+app.listen(PORT,'0.0.0.0',async()=>{try{await bootstrap();await generateDueNotifications();setInterval(generateDueNotifications,6*60*60*1000);console.log(`Tontine Digital API listening on ${PORT}`)}catch(e){console.error('BOOTSTRAP ERROR:',e.message)}});
 
 process.on('SIGTERM',async()=>{await pool.end();process.exit(0);});
