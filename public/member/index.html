@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Tontine Digital"><link rel="manifest" href="/member/manifest.webmanifest"><link rel="icon" href="/member/icon-192.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/member/icon-192.svg">
 <meta name="theme-color" content="#087f5b">
 <title>Tontine Digital 1.0 — Espace membre</title>
 <style>
@@ -60,7 +60,7 @@ body{background:var(--bg)!important;color:var(--ink)}
 </style></head>
 <body>
 <div id="auth" class="auth"><div class="authbox">
-<div class="authlogo"><span>TD</span></div><h1>Tontine Digital 1.0</h1><p class="sub">Épargne collective simple, transparente et sécurisée.</p>
+<div class="authlogo"><span>TD</span></div><h1>Tontine Digital 1.0</h1><p class="sub">Épargne collective simple, transparente et sécurisée.</p><button id="installAppBtn" class="secondary hidden" onclick="installTontineApp()" style="width:100%;margin:8px 0">📲 Installer sur Android</button>
 <div class="authtabs"><button id="tabReg" class="on" onclick="authMode('reg')">Inscription</button><button id="tabLogin" onclick="authMode('login')">Connexion</button></div>
 <div id="registerForm">
 <label>Nom complet</label><input id="name" placeholder="Votre nom et prénom">
@@ -145,4 +145,22 @@ function copyRef(){navigator.clipboard?.writeText(user?.referral_code||'').then(
 function logout(){localStorage.removeItem('tdMemberToken');location.reload()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 if(token){api('/me').then(showApp).catch(()=>logout())}
+</script><script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/member/sw.js',{scope:'/member/'}).catch(()=>{}));
+}
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredInstallPrompt=e;
+  const b=document.getElementById('installAppBtn');
+  if(b) b.classList.remove('hidden');
+});
+async function installTontineApp(){
+  if(!deferredInstallPrompt){ alert('Dans Chrome, ouvre le menu ⋮ puis « Installer l’application » ou « Ajouter à l’écran d’accueil ».'); return; }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  const b=document.getElementById('installAppBtn'); if(b) b.classList.add('hidden');
+}
+window.addEventListener('appinstalled',()=>{const b=document.getElementById('installAppBtn');if(b)b.classList.add('hidden');});
 </script></body></html>
