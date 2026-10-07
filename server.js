@@ -147,6 +147,15 @@ api.post('/payments',auth,async(req,res)=>{
     finally{c.release();}
   }catch(e){res.status(e.status||500).json({error:e.message||'Paiement impossible'});}
 });
+api.post('/admin/payments/:id/reject',auth,roles('admin','super_admin'),async(req,res)=>{
+  const reason=String(req.body?.reason||'Paiement refusé par l’administration').trim();
+  const q=await pool.query(`UPDATE payments SET status='FAILED' WHERE id=$1 AND status='PENDING' RETURNING *`,[req.params.id]);
+  if(!q.rowCount)return res.status(409).json({error:'Ce paiement ne peut pas être refusé'});
+  await pool.query(`INSERT INTO notifications(user_id,type,title,body) VALUES($1,'PAYMENT_FAILED','Paiement refusé',$2)`,[q.rows[0].user_id,reason]);
+  await audit(req.user.sub,'REJECT_PAYMENT','payment',q.rows[0].id,{reason});
+  res.json(q.rows[0]);
+});
+
 api.get('/referrals',auth,async(req,res)=>{
   const q=await pool.query(`
     SELECT u.id,u.full_name,u.phone,u.created_at,
@@ -158,7 +167,7 @@ api.get('/referrals',auth,async(req,res)=>{
     ORDER BY u.created_at DESC
   `,[req.user.sub]);
   const total=q.rows.reduce((sum,row)=>sum+Number(row.commission_earned||0),0);
-  res.json({referralCode:(await pool.query('SELECT referral_code FROM users WHERE id=$1',[req.user.sub])).rows[0]?.referral_code||null,referrals:q.rows,totalCommission:total,rate:1});
+  res.json({referralCode:(await pool.query('SELECT referral_code FROM users WHERE id=$1',[req.user.sub])).rows[0]?.referral_code||null,referrals:q.rows,directReferrals:q.rows,totalCommission:total,rate:1});
 });
 api.get('/payments',auth,async(req,res)=>res.json((await pool.query('SELECT * FROM payments WHERE user_id=$1 ORDER BY created_at DESC',[req.user.sub])).rows));
 api.get('/payments/:id/receipt',auth,async(req,res)=>{
@@ -221,6 +230,11 @@ api.post('/admin/payments/:id/confirm',auth,roles('admin','super_admin'),async(r
       const s=await c.query('SELECT referred_by FROM users WHERE id=$1',[x.user_id]);
       if(s.rows[0]?.referred_by)await c.query(`INSERT INTO ledger_entries(payment_id,tontine_id,user_id,nature,amount,reference) VALUES($1,$2,$3,'SPONSOR_COMMISSION',$4,$5)`,
         [x.id,x.tontine_id,s.rows[0].referred_by,x.sponsor_commission,ref]);
+    }
+    await c.query(`INSERT INTO notifications(user_id,type,title,body) VALUES($1,'PAYMENT_CONFIRMED','Cotisation confirmée',$2)`,[x.user_id,`Votre cotisation de ${x.total_amount} FCFA a été confirmée. Référence : ${ref}.`]);
+    if(x.sponsor_commission>0){
+      const spon=await c.query('SELECT referred_by FROM users WHERE id=$1',[x.user_id]);
+      if(spon.rows[0]?.referred_by) await c.query(`INSERT INTO notifications(user_id,type,title,body) VALUES($1,'SPONSOR_COMMISSION','Commission de parrainage', $2)`,[spon.rows[0].referred_by,`Une commission de ${x.sponsor_commission} FCFA a été enregistrée grâce à votre filleul.`]);
     }
     await c.query('COMMIT');await audit(req.user.sub,'CONFIRM_PAYMENT','payment',x.id,{providerReference:ref});
     res.json({ok:true,status:'CONFIRMED',providerReference:ref});
