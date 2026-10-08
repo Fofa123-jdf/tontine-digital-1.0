@@ -1,1 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="#087f5b"/><rect x="24" y="24" width="144" height="144" rx="32" fill="#075f47"/><text x="96" y="112" text-anchor="middle" font-family="Arial,sans-serif" font-size="58" font-weight="800" fill="#fff">TD</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+ <radialGradient id="bg" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#0d5fa8"/><stop offset="1" stop-color="#062e69"/></radialGradient>
+ <linearGradient id="gold" x1="0" x2="1"><stop stop-color="#ffd84d"/><stop offset="1" stop-color="#f29b16"/></linearGradient>
+ <linearGradient id="green" x1="0" x2="1"><stop stop-color="#6be35b"/><stop offset="1" stop-color="#18a957"/></linearGradient>
+</defs>
+<circle cx="256" cy="256" r="248" fill="url(#bg)" stroke="#ffd34d" stroke-width="12"/>
+<circle cx="256" cy="256" r="226" fill="none" stroke="#f6b52d" stroke-width="4"/>
+<!-- community -->
+<circle cx="176" cy="108" r="31" fill="#5ee04f"/><path d="M125 190c5-44 33-65 69-65 22 0 40 8 54 25-38 6-66 31-77 69z" fill="url(#green)"/>
+<circle cx="256" cy="86" r="34" fill="#ffbd20"/><path d="M199 190c5-52 29-78 57-78s52 26 57 78z" fill="#ffbf20"/>
+<circle cx="338" cy="108" r="31" fill="#29a7ee"/><path d="M264 160c14-17 32-25 54-25 36 0 64 21 69 65l-46 29c-11-38-39-63-77-69z" fill="#258fd8"/>
+<!-- hand -->
+<path d="M103 260c34 55 87 82 153 82 63 0 116-24 153-73l18 23c-42 67-101 99-171 99-75 0-138-34-177-100z" fill="url(#gold)"/>
+<!-- coins -->
+<ellipse cx="256" cy="254" rx="78" ry="24" fill="#ffd84d" stroke="#d8890e" stroke-width="6"/>
+<path d="M178 254v22c0 14 35 25 78 25s78-11 78-25v-22" fill="#f4ae1d" stroke="#d8890e" stroke-width="6"/>
+<ellipse cx="256" cy="238" rx="78" ry="24" fill="#ffe36a" stroke="#d8890e" stroke-width="6"/>
+<text x="256" y="249" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="800" fill="#b96d00">F</text>
+<!-- phone -->
+<g transform="translate(345 177) rotate(10)">
+<rect x="0" y="0" width="76" height="128" rx="14" fill="#fff"/>
+<rect x="8" y="12" width="60" height="104" rx="9" fill="#1466ad"/>
+<circle cx="38" cy="64" r="25" fill="none" stroke="#fff" stroke-width="6"/>
+<path d="M24 64l10 10 20-24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<!-- brand -->
+<text x="256" y="398" text-anchor="middle" font-family="Arial,sans-serif" font-size="54" font-weight="900" fill="#fff">Tontine</text>
+<text x="256" y="447" text-anchor="middle" font-family="Arial,sans-serif" font-size="42" font-weight="900" fill="#ffc52e">Digital <tspan fill="#52d86b" font-size="30">1.0</tspan></text>
+</svg>
